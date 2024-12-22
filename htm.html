@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix Rain Effect with Funny Images and Sound</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      height: 100vh;
+      position: relative;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1; /* Canvas อยู่หลังเนื้อหาทั้งหมด */
+    }
+
+    .content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1; /* รูปและข้อความอยู่ด้านหน้าของ canvas */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .image-container {
+      animation: funnyEffect 2s infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 250px; /* กำหนดความกว้างที่เท่ากันสำหรับทุกภาพ */
+      height: 450px; /* กำหนดความสูงที่เท่ากันสำหรับทุกภาพ */
+      overflow: hidden; /* เพื่อไม่ให้รูปภาพล้นออกจาก container */
+    }
+
+    img {
+      width: 100%;  /* ทำให้รูปยืดเต็ม container */
+      height: 100%; /* ทำให้รูปยืดเต็ม container */
+      object-fit: cover; /* ให้ภาพไม่ผิดสัดส่วนและครอบภาพ */
+      border-radius: 10px;
+      transition: transform 0.5s ease, opacity 1s ease;
+    }
+
+    @keyframes funnyEffect {
+      0% {
+        transform: rotate(0deg) scale(1) translate(0, 0);
+      }
+      20% {
+        transform: rotate(180deg) scale(1.5) translate(50px, 50px);
+      }
+      40% {
+        transform: rotate(360deg) scale(0.5) translate(-50px, -50px);
+      }
+      60% {
+        transform: rotate(720deg) scale(1.2) translate(30px, -30px);
+      }
+      80% {
+        transform: rotate(1080deg) scale(0.8) translate(-30px, 30px);
+      }
+      100% {
+        transform: rotate(1440deg) scale(1) translate(0, 0);
+      }
+    }
+
+    h1 {
+      color: white;
+      font-size: 3em;
+      margin-top: 20px;
+    }
+
+    audio {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <div class="content">
+    <div class="image-container">
+      <img src="466358328_1783679538879002_3178592826428389724_n.jpg" alt="Funny Image 1">
+    </div>
+    <div class="image-container">
+      <img src="447713963_383077424753963_7437952857351418556_n.jpg" alt="Funny Image 2">
+    </div>
+    <div class="image-container">
+      <img src="462553286_441398292336281_7653979028338045952_n.jpg" alt="Funny Image 3">
+    </div>
+    <div class="image-container">
+      <img src="462575956_930284389020162_3098432467841990424_n.jpg" alt="Funny Image 4">
+    </div>
+  </div>
+
+  <!-- เพิ่มเสียงพื้นหลัง -->
+  <audio id="background-music" preload="auto">
+    <source src="BlackHeart - ออมนเเทรป (BENTRAP) Ft.SARAN,1ST,P6ICK,2K,THEBESTS,VAREEONE.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    const music = document.getElementById('background-music');
+
+    // ปรับขนาด canvas ให้เต็มหน้าจอ
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const fontSize = 16;
+    const columns = canvas.width / fontSize; // จำนวนคอลัมน์ตามความกว้าง
+    const drops = Array(Math.floor(columns)).fill(1); // ตำแหน่งเริ่มต้นของ "หยด"
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; // เอฟเฟกต์จางลง
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#0F0'; // สีเขียว
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        // รีเซ็ตหยดเมื่อเกินความสูง
+        if (drops[i] * fontSize > canvas.height || Math.random() > 0.95) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 50);
+
+    // อัปเดตขนาด canvas เมื่อเปลี่ยนขนาดหน้าจอ
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // เริ่มเล่นเสียงเมื่อคลิกที่หน้า
+    document.body.addEventListener('click', function() {
+      music.play();
+    });
+  </script>
+</body>
+</html>
